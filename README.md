@@ -32,6 +32,9 @@ LibreHardwareMonitorのセンサーデータをRainmeterから直接取得する
 - センサー名（`HardwareName`、`SensorName`）は環境依存です。
   最初はDebugスキンで一覧を確認し、正確な名前をiniにコピーしてください。
 
+## 開発
+- LHMMonitorフォルダーと同階層にrainmeter-plugin-sdkの`API`フォルダーをコピーしてください。
+
 ## 簡単な使い方
 
 ```ini
