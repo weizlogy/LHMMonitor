@@ -2,21 +2,38 @@
 
 LibreHardwareMonitorのセンサーデータをRainmeterから直接取得するプラグインです。
 
-## これなに
+## これは？
 
-「PCの温度とかCPU使用率とかをRainmeterで表示したい」と思ったとき、
-従来はLHMのローカルWebサーバーを起動したり、RTSSを経由したりする必要がありました。
+「PCの温度とかCPU使用率とかをデスクトップに常駐表示させたい」と思ったとき...
 
-このプラグインは、LHMのライブラリ（LibreHardwareMonitorLib）をRainmeterプロセス内で
-直接ホストすることで、センサーデータを取得します。
+### RTSS
+
+DesktopOverlayHost64.exeを起動させるだけ。だけどもタスクバーにいるの邪魔。
+
+### Rainmeter
+
+HWinfo経由
+- インストールして起動させておかないといけない？
+- 共有メモリはFreeだと12時間制限？？？
+
+Open Hardware Monitor経由
+- インストールして起動させておかないといけない？
+
+Libra Hardware Monitor経由
+- インストールして起動させておかないといけない？
+- ローカルWebサーバーを起動させておかないといけない？
+
+とにかくなにかインストールして起動させておかないといけない？？？
+
+このプラグインは、LHMのライブラリ（LibreHardwareMonitorLib）をRainmeterプロセス内で直接ホストすることで
+センサーデータを取得するため、ほかにインストールや常駐させる必要はありません。
 
 ## 特徴
 
 - **ダイレクトアクセス**: LHMのライブラリを直接呼び出すため、HTTPやWMIのオーバーヘッドがありません
 - **バックグラウンド更新**: 別スレッドで定期的にセンサーを更新するため、RainmeterのUpdate頻度を上げてもモッサリしません
-- **プロセス内シングルトン**: 複数のMeasureやスキンで使っても、LHMの初期化は1回だけ
-- **デバッグ機能**: `Debug=1`で、利用可能なセンサー一覧を画面に表示。HardwareNameやSensorNameの調査が簡単です
 - **柔軟な指定**: `HardwareName` / `SensorType` / `SensorName`の3パラメータで、目的のセンサーをピンポイントで指定
+- **デバッグ機能**: `Debug=1`で、利用可能なセンサー一覧を画面に表示。HardwareNameやSensorNameの調査が簡単です
 
 ## 動作要件
 
@@ -32,20 +49,24 @@ LibreHardwareMonitorのセンサーデータをRainmeterから直接取得する
 - センサー名（`HardwareName`、`SensorName`）は環境依存です。
   最初はDebugスキンで一覧を確認し、正確な名前をiniにコピーしてください。
 
-## 開発
+## 開発環境
+
+- Visual Studio
 - LHMMonitorフォルダーと同階層にrainmeter-plugin-sdkの`API`フォルダーをコピーしてください。
 
 ## 簡単な使い方
 
-```ini
-[MeasureCPUTemp]
-Measure=LHMMonitor
-HardwareName=AMD Ryzen 9 5900X
-SensorType=Temperature
-SensorName=CPU Package
-UpdateInterval=1000
+- LHMMonitor.dllをRainmeterのPluginフォルダに入れます。（AppData\Roaming\Rainmeter\Plugins とか？）
 
-[MeterCPUTemp]
-Meter=String
-MeasureName=MeasureCPUTemp
-Text=CPU: %1°C
+- iniを書きます。
+
+```ini
+[MeasureCPUCoreTemp]
+Measure=Plugin
+Plugin=LHMMonitor.dll
+HardwareName=AMD Ryzen 5 9600X
+SensorType=Temperature
+SensorName=Core (Tctl/Tdie)
+```
+
+- 動きます。
